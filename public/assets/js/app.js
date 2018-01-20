@@ -63,6 +63,39 @@ $('#photos-input').on('change', function () {
     $('.progress-bar').width('0%');
 });
 
+// Set the progress bar to 0 when a file(s) is selected.
+$('#showUploads').on('click', function () {
+    $('.progress-bar').width('0%');
+
+    $.ajax({
+        url: '/show_photos',
+        method: 'get',
+        xhr: function () {
+            var xhr = new XMLHttpRequest();
+
+            // Add progress event listener to the upload.
+            xhr.upload.addEventListener('progress', function (event) {
+                var progressBar = $('.progress-bar');
+
+                if (event.lengthComputable) {
+                    var percent = (event.loaded / event.total) * 100;
+                    progressBar.width(percent + '%');
+
+                    if (percent === 100) {
+                        progressBar.removeClass('active');
+                    }
+                }
+            });
+
+            return xhr;
+        }
+    }).done(handleSuccess).fail(function (xhr, status) {
+        alert(status);
+    });
+});
+
+
+
 // On form submit, handle the file uploads.
 $('#upload-photos').on('submit', function (event) {
     event.preventDefault();

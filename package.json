@@ -7,7 +7,8 @@
     "node": "6.2.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "devstart": "nodemon app.js"
   },
   "author": "Tamil Selvan K",
   "license": "MIT",
@@ -26,5 +27,8 @@
     "express",
     "ajax",
     "image upload"
-  ]
+  ],
+  "devDependencies": {
+    "nodemon": "^1.14.11"
+  }
 }

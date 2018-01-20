@@ -17,7 +17,6 @@ app.use('/uploads', express.static('uploads'));
  * Index route
  */
 app.get('/', function (req, res) {
-    // Don't bother about this :)
     var filesPath = path.join(__dirname, 'uploads/');
     fs.readdir(filesPath, function (err, files) {
         if (err) {
@@ -34,7 +33,9 @@ app.get('/', function (req, res) {
 
                 var createdAt = Date.parse(stats.ctime),
                     days = Math.round((Date.now() - createdAt) / (1000*60*60*24));
-
+   
+   
+                             
                 if (days > 1) {
                     fs.unlink(filesPath + file);
                 }
@@ -43,6 +44,46 @@ app.get('/', function (req, res) {
     });
 
     res.sendFile(path.join(__dirname, 'views/index.html'));
+});
+
+
+
+/**
+ * Index route
+ */
+app.get('/show_photos', function (req, res) {
+    var filesPath = path.join(__dirname, 'uploads/');
+    var photos = [];
+ 
+    fs.readdir(filesPath, function (err, files) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        files.forEach(function (file) {
+            
+            fs.stat(filesPath + file, function (err, stats) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (file.split('.')[1].toLowerCase() === 'png' || file.split('.')[1].toLowerCase() === 'jpg' || file.split('.')[1].toLowerCase() === 'jpeg'){
+                    photos.push({
+                        status: true,
+                        filename: file,
+                        type: file.split('.')[1],
+                        publicPath: 'uploads/' + file
+                    });
+                 }
+            });
+        });
+    });
+    
+    setTimeout(() => {
+        console.log("photos: "+photos);
+        res.status(200).json(photos)
+    }, 1000);
 });
 
 /**
